@@ -48,7 +48,7 @@ class ComentariossController extends Controller
         ->where('productos.nombre','=',$Nombre->Producto)
         ->select('comentarios.id','comentarios.Contenido')
         ->get();
-        dd ($products);
+        return($products);
     }
 
     /**

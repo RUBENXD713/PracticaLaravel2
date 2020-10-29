@@ -35,4 +35,10 @@ Route::get('Eliminar','PersonasController@Delete');
 Route::put('actualizarPersona/{id}','PersonasController@UpdatePersona');
 Route::get('RelacionTodo','PersonasController@RelacionTotal');
 Route::post("Productos2",'ProductosController@ejemplo')->middleware('validar');
+
+Route::delete('LogOut','UserController@LogOut');
+Route::get('Users','UserController@index');
+
+Route::post('Registro','UserController@Registro');
+Route::post('Login','UserController@LogIn');
 //});
