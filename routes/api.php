@@ -36,9 +36,11 @@ Route::put('actualizarPersona/{id}','PersonasController@UpdatePersona');
 Route::get('RelacionTodo','PersonasController@RelacionTotal');
 Route::post("Productos2",'ProductosController@ejemplo')->middleware('validar');
 
-Route::delete('LogOut','UserController@LogOut');
-Route::get('Users','UserController@index');
+Route::middleware('auth:sanctum')->delete('LogOut','UserController@LogOut');
+Route::middleware('auth:sanctum')->get('users','UserController@index');
 
 Route::post('Registro','UserController@Registro');
 Route::post('Login','UserController@LogIn');
+
+Route::put('CambiarPermiso','UserController@actualizar')->middleware('admin');
 //});

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use App\User;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -22,13 +23,29 @@ class UserController extends Controller
         ]);
         $user=User::where('email',$request->email)->first();
 
-        if($user || Hash::check($request->password, $user->password)){
+        if(!$user || !Hash::check($request->password, $user->password)){
             throw ValidationException::withMessages([
                 'email|password'=>['Datos Incorrectos']
             ]);
         }
-        $token=$user->createToken($request->email,['user:user','admin:admin'])->plainTextToken;
-        return response()->json(["token"=>$token],201);
+        if($user->TipoUsuario == 'admin')
+        {
+            $token=$user->createToken($request->email, ['admin:admin'])->plainTextToken;
+            return response()->json(["token"=>$token],201);
+        }
+        else
+        {
+            if($user->TipoUsuario == 'userT2' )
+            {
+                $token=$user->createToken($request->email, ['user:user'])->plainTextToken;
+                return response()->json(["token"=>$token],201);
+            }
+            else
+            {
+                $token=$user->createToken ($request->email,['user:info'])->plainTextToken;
+                return response()->json(["token"=>$token],201);
+            }
+        }
     }
 
     /**
@@ -38,7 +55,8 @@ class UserController extends Controller
      */
     public function LogOut(Request $request)
     {
-        return response()->json(["destroy"=>$request->user()->token()->delete()],200);
+        return response()->json(["Destroyed"=>$request->user()->token()->delete()],200);
+        //return response()->json(["destroy" => $request->user()->tokens()->delete()],200);
     }
 
     /**
@@ -47,20 +65,20 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function Registro(Request $Nombre)
+    public function Registro(Request $request)
     {
         $request->validate([
-            'email'=>'required|email|unique',
+            'email'=>'required|email',
             'password'=>'required',
-            'name'=>'required',
+            'name'=>'required'
         ]);
         $user = new User();
         $user->name=$request->name;
         $user->email=$request->email;
-        $user->TipoUsuario=$request->tipo;
         $user->password=Hash::make($request->password);
+        $user->TipoUsuario='user';
         if($user->save()){
-            return response()->json($usr,200);
+            return response()->json($user);
         }
         return abort(402, "Error al Insertar");
     }
@@ -75,12 +93,21 @@ class UserController extends Controller
     {
         if($request->user()->tokenCan('user:user'))
         {
-            return response()->json(['users'=>User::all()],200);
+            return response()->json(['Perfil'=>$request->user()],200);
         }
         if($request->user()->tokenCan('admin:admin'))
         {
-            return response()->json(['users'=>User::all()->where()],200);
+            return response()->json(['Usuario'=>User::all()->where()],200);
         }      
         return abort(402, "Error al Insertar");
+    }
+    public function actualizar(Request $request)
+    {
+        
+        $user=User::find ($request->id);  
+        $user->TipoUsuario=$request->tipo;  
+        if($user->save())
+        return response()->json(["Permiso Actualizado a"=>$user]);   
+        return response()->json(null,400);
     }
 }
