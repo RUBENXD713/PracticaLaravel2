@@ -52,7 +52,7 @@ class ProductosController extends Controller
         ->where('productos.nombre','=',$Nombre->Nombre)
         ->select('productos.Nombre','comentarios.Contenido')
         ->get();
-        dd ($products);
+        return ($products);
     }
 
     /**

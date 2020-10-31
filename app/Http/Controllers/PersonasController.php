@@ -34,7 +34,7 @@ class PersonasController extends Controller
         ->Where('personas.Nombre','=',$Nombre->usuario)
         ->select('comentarios.Contenido','personas.nombre')
         ->get();
-        dd ($personas);
+        return ($personas);
     }
 
     /**
@@ -95,7 +95,7 @@ class PersonasController extends Controller
         ->Where('personas.Nombre','=',$request->usuario)
         ->select('productos.Nombre','comentarios.Contenido','personas.nombre')
         ->get();
-        dd ($personas);
+        return ($personas);
     }
 
     /**

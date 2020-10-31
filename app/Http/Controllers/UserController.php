@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use App\User;
 use Illuminate\Support\Facades\Hash;
+use Log;
 
 class UserController extends Controller
 {
@@ -55,8 +56,8 @@ class UserController extends Controller
      */
     public function LogOut(Request $request)
     {
-        return response()->json(["Destroyed"=>$request->user()->token()->delete()],200);
-        //return response()->json(["destroy" => $request->user()->tokens()->delete()],200);
+        //return response()->json(["Destroyed"=>$request->user()->token()->delete()],200);
+        return response()->json(["destroyed" => $request->user()->tokens()->delete()],200);
     }
 
     /**
@@ -97,7 +98,7 @@ class UserController extends Controller
         }
         if($request->user()->tokenCan('admin:admin'))
         {
-            return response()->json(['Usuario'=>User::all()->where()],200);
+            return response()->json(['Usuarios'=>User::all()],200);
         }      
         return abort(402, "Error al Insertar");
     }
