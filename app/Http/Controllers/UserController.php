@@ -71,13 +71,15 @@ class UserController extends Controller
         $request->validate([
             'email'=>'required|email',
             'password'=>'required',
-            'name'=>'required'
+            'name'=>'required',
+            'persona'=>'required'
         ]);
         $user = new User();
         $user->name=$request->name;
         $user->email=$request->email;
         $user->password=Hash::make($request->password);
         $user->TipoUsuario='user';
+        $user->persona=$request->persona;
         if($user->save()){
             return response()->json($user);
         }

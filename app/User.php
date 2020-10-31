@@ -17,6 +17,11 @@ class User extends Authenticatable
      *
      * @var array
      */
+    public function Personas()
+    {
+        return $this->belongTo('App\Personas');
+        //muchos comentario tienen una persona
+    }
     public $table ='users';
 
     protected $fillable = [
